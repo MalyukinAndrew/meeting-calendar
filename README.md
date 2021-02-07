@@ -9,4 +9,4 @@ then
 
 or you can view it on github pages
 
-[Meeting calendar Demo](https://malyukinandrew.github.io/meeting-calendar/dist/index.html)
+[Meeting calendar Demo](https://malyukinandrew.github.io/meeting-calendar/)
