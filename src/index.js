@@ -1,8 +1,11 @@
 import { Select } from './select/select';
 import pushMeeting from './form/form';
+import loginForm from './form/loginForm'
 import { render, renderTable } from './table/table';
 import './select/styles.scss';
 import './main.scss';
+import { createUserClass } from "./utils"
+import { rawParticipants } from './constants'
 
 const createEventButton = document.getElementById('create-event');
 const closeFormButton = document.getElementById('close-form');
@@ -11,6 +14,7 @@ const formBackdrop = document.querySelector('.create-event-form');
 export let selectedWeekDay;
 export let selectedTime;
 export let selectedParticipants = [];
+export let currentUser;
 
 function showCreateEventWindow(e) {
   e.preventDefault();
@@ -27,7 +31,8 @@ export const tableRows = [];
 for (let i = 10; i <= 18; i++) {
   tableRows.push(`${i}:00`);
 }
-export const participants = ['Afonya', 'Oleg', 'Alisa', 'Max', 'Alex'];
+
+const participants = rawParticipants.map(createUserClass)
 
 export const data = {
   Monday: {},
@@ -36,9 +41,6 @@ export const data = {
   Thursday: {},
   Friday: {},
 };
-
-// const rawCalendarData = localStorage.getItem('calendarData');
-// const calendarData = JSON.parse(rawCalendarData);
 
 export let filteredData = JSON.parse(JSON.stringify(data));
 
@@ -68,11 +70,24 @@ const participantsPicker = new Select('#participants', {
   placeholder: 'Choose participants',
   data: participants.map((item, id) => ({
     id: id.toString(),
-    value: item,
+    value: item.name,
   })),
   onSelect(value) {
     selectedParticipants = value.map((item) => item.value);
   },
+});
+
+const userAuth = new Select('#auth', {
+  placeholder: 'Choose user',
+  data: participants.map((item, id) => ({
+    id: id.toString(),
+    value: item.name,
+  })),
+  onSelect(value) {
+    currentUser = participants.filter((item)=>{
+      return item.name===value.value
+    });
+  }
 });
 
 export function filterFunc() {
@@ -93,7 +108,7 @@ const filter = new Select('#filter', {
   placeholder: 'All members',
   data: participantsFilter.map((item, id) => ({
     id: id.toString(),
-    value: item,
+    value: item.name || item,
   })),
   onSelect(value) {
     filterBy = value.value;

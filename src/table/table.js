@@ -81,14 +81,22 @@ export function renderTable(inputData) {
 }
 
 export function render() {
+    const loginFormBack = document.querySelector(".login-form-back")
+    const loginForm = document.querySelector(".login-form")
     if (calendarData) {
-        for(const day in calendarData){
-            for(const time in calendarData){
+        for (const day in calendarData) {
+            for (const time in calendarData) {
                 data[day] = calendarData[day]
             }
         }
+        loginForm.classList.add('show')
+        loginFormBack.classList.add('show')
         renderTable(data);
     }
-    else { renderTable(data); }
+    else {
+        loginFormBack.classList.add('show')
+        loginForm.classList.add('show')
+        renderTable(data);
+    }
 }
 

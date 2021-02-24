@@ -8,7 +8,7 @@ import {
   selectedTime,
 } from '../index';
 import { renderTable } from '../table/table';
-import { Select } from '../select/select';
+
 
 const form = document.getElementById('form');
 
