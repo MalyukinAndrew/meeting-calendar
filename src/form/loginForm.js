@@ -15,7 +15,7 @@ function login(e) {
     else {
         if (currentUser[0].role === "user") {
             error.innerText = ""
-            createEventButton.disabled = true
+            createEventButton.style.display = "none"
             loginFormBack.classList.remove("show")
             loginForm.classList.remove("show")
             render();

@@ -569,7 +569,7 @@ function login(e) {
   } else {
     if (_index.currentUser[0].role === "user") {
       error.innerText = "";
-      createEventButton.disabled = true;
+      createEventButton.style.display = "none";
       loginFormBack.classList.remove("show");
       loginForm.classList.remove("show");
       (0, _table.render)();
@@ -962,7 +962,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "45653" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "40859" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
