@@ -432,17 +432,23 @@ function renderTableBody(inputData) {
         titleWrapper.classList.add('filled');
         titleWrapper.dataset.title = event;
         titleWrapper.dataset.participants = inputData[column][time].participants;
-        titleWrapper.draggable = true;
+
+        if (_index.currentUser[0].role === "user") {
+          titleWrapper.draggable = false;
+        } else {
+          titleWrapper.draggable = true;
+          removeButton.addEventListener('click', removeMeeting);
+          titleWrapper.appendChild(removeButton);
+        }
+
         tdElem.classList.add('taken');
-        removeButton.addEventListener('click', removeMeeting);
-        titleWrapper.appendChild(removeButton);
       }
 
       titleWrapper.dataset.day = column;
       titleWrapper.dataset.time = time;
       tdElemText.innerText = index === 0 ? time : event;
 
-      if (index !== 0) {
+      if (index !== 0 && _index.currentUser[0].role === "admin") {
         tdElem.classList.add('drop-zone');
         tdElem.dataset.day = column;
         tdElem.dataset.time = time;
@@ -485,14 +491,14 @@ function render() {
       for (var time in calendarData) {
         _index.data[day] = calendarData[day];
       }
-    }
+    } // loginForm.classList.add('show')
+    // loginFormBack.classList.add('show')
 
-    loginForm.classList.add('show');
-    loginFormBack.classList.add('show');
+
     renderTable(_index.data);
   } else {
-    loginFormBack.classList.add('show');
-    loginForm.classList.add('show');
+    // loginFormBack.classList.add('show')
+    // loginForm.classList.add('show')
     renderTable(_index.data);
   }
 }
@@ -546,6 +552,8 @@ exports.loginForm = void 0;
 
 var _index = require("../index");
 
+var _table = require("../table/table");
+
 var loginFormBack = document.querySelector(".login-form-back");
 var loginForm = document.querySelector(".login-form");
 exports.loginForm = loginForm;
@@ -564,15 +572,18 @@ function login(e) {
       createEventButton.disabled = true;
       loginFormBack.classList.remove("show");
       loginForm.classList.remove("show");
+      (0, _table.render)();
     } else {
       loginFormBack.classList.remove("show");
       loginForm.classList.remove("show");
     }
+
+    (0, _table.render)();
   }
 }
 
 loginForm.addEventListener("submit", login);
-},{"../index":"index.js"}],"../node_modules/parcel-bundler/src/builtins/bundle-url.js":[function(require,module,exports) {
+},{"../index":"index.js","../table/table":"table/table.js"}],"../node_modules/parcel-bundler/src/builtins/bundle-url.js":[function(require,module,exports) {
 var bundleURL = null;
 
 function getBundleURLCached() {
@@ -922,8 +933,7 @@ var filter = new _select.Select('#filter', {
       (0, _table.renderTable)(filteredData);
     }
   }
-});
-(0, _table.render)();
+}); // render();
 },{"./select/select":"select/select.js","./form/form":"form/form.js","./form/loginForm":"form/loginForm.js","./table/table":"table/table.js","./select/styles.scss":"select/styles.scss","./main.scss":"main.scss","./utils":"utils.js","./constants":"constants.js"}],"../node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
@@ -952,7 +962,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "40169" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "45653" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

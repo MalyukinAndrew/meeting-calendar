@@ -1,4 +1,5 @@
 import { currentUser } from "../index"
+import {render} from "../table/table"
 
 const loginFormBack = document.querySelector(".login-form-back")
 export const loginForm = document.querySelector(".login-form")
@@ -17,9 +18,11 @@ function login(e) {
             createEventButton.disabled = true
             loginFormBack.classList.remove("show")
             loginForm.classList.remove("show")
+            render();
         }
         else {loginFormBack.classList.remove("show")
         loginForm.classList.remove("show")}
+        render();
     }
 }
 

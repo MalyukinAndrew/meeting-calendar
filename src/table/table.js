@@ -1,4 +1,4 @@
-import { data, filterBy, tableColumns, tableRows, filteredData } from '../index'
+import { data, filterBy, tableColumns, tableRows, filteredData, currentUser } from '../index'
 import addDragAndDrop from '../dragAndDrop/dragAndDrop'
 
 export const table = document.getElementById('tab');
@@ -38,17 +38,24 @@ function renderTableBody(inputData) {
                 titleWrapper.classList.add('filled')
                 titleWrapper.dataset.title = event
                 titleWrapper.dataset.participants = inputData[column][time].participants
-                titleWrapper.draggable = true
+                if (currentUser[0].role==="user"){
+                    titleWrapper.draggable = false
+                }
+                else{
+                    titleWrapper.draggable = true
+                    removeButton.addEventListener('click', removeMeeting)
+                titleWrapper.appendChild(removeButton)
+                }
+                
 
                 tdElem.classList.add('taken')
 
-                removeButton.addEventListener('click', removeMeeting)
-                titleWrapper.appendChild(removeButton)
+                
             }
             titleWrapper.dataset.day = column
             titleWrapper.dataset.time = time
             tdElemText.innerText = index === 0 ? time : event;
-            if (index !== 0) {
+            if (index !== 0 && currentUser[0].role==="admin") {
                 tdElem.classList.add('drop-zone')
                 tdElem.dataset.day = column
                 tdElem.dataset.time = time
@@ -89,13 +96,13 @@ export function render() {
                 data[day] = calendarData[day]
             }
         }
-        loginForm.classList.add('show')
-        loginFormBack.classList.add('show')
+        // loginForm.classList.add('show')
+        // loginFormBack.classList.add('show')
         renderTable(data);
     }
     else {
-        loginFormBack.classList.add('show')
-        loginForm.classList.add('show')
+        // loginFormBack.classList.add('show')
+        // loginForm.classList.add('show')
         renderTable(data);
     }
 }

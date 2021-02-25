@@ -121,4 +121,4 @@ const filter = new Select('#filter', {
   },
 });
 
-render();
+// render();
