@@ -1,10 +1,8 @@
 import { data, filterBy, tableColumns, tableRows, filteredData, currentUser } from '../index'
 import addDragAndDrop from '../dragAndDrop/dragAndDrop'
+import { Api } from '../api';
 
 export const table = document.getElementById('tab');
-
-const rawCalendarData = localStorage.getItem('calendarData');
-const calendarData = JSON.parse(rawCalendarData);
 
 function renderHeader() {
     const trElem = document.createElement('tr');
@@ -34,28 +32,28 @@ function renderTableBody(inputData) {
                 removeButton.innerText = 'X'
                 removeButton.dataset.day = column
                 removeButton.dataset.time = time
+                removeButton.dataset.id = inputData[column][time].id
 
                 titleWrapper.classList.add('filled')
+                titleWrapper.dataset.id = inputData[column][time].id
                 titleWrapper.dataset.title = event
                 titleWrapper.dataset.participants = inputData[column][time].participants
-                if (currentUser[0].role==="user"){
+                if (currentUser[0].role === "user") {
                     titleWrapper.draggable = false
                 }
-                else{
+                else {
                     titleWrapper.draggable = true
                     removeButton.addEventListener('click', removeMeeting)
-                titleWrapper.appendChild(removeButton)
+                    titleWrapper.appendChild(removeButton)
                 }
-                
 
                 tdElem.classList.add('taken')
 
-                
             }
             titleWrapper.dataset.day = column
             titleWrapper.dataset.time = time
             tdElemText.innerText = index === 0 ? time : event;
-            if (index !== 0 && currentUser[0].role==="admin") {
+            if (index !== 0 && currentUser[0].role === "admin") {
                 tdElem.classList.add('drop-zone')
                 tdElem.dataset.day = column
                 tdElem.dataset.time = time
@@ -69,15 +67,16 @@ function renderTableBody(inputData) {
 function removeMeeting(event) {
     const day = event.target.dataset.day
     const time = event.target.dataset.time
-    delete data[day][time]
-    localStorage.setItem('calendarData', JSON.stringify(data));
-    delete filteredData[day][time]
-    if (filterBy === 'All members') {
-        renderTable(data)
-    }
-    else {
-        renderTable(filteredData)
-    }
+    Api.delete(`/events/${data[day][time].id}`).then(() => {
+        delete data[day][time]
+        delete filteredData[day][time]
+        if (filterBy === 'All members') {
+            renderTable(data)
+        }
+        else {
+            renderTable(filteredData)
+        }
+    })
 }
 
 export function renderTable(inputData) {
@@ -88,22 +87,22 @@ export function renderTable(inputData) {
 }
 
 export function render() {
-    const loginFormBack = document.querySelector(".login-form-back")
-    const loginForm = document.querySelector(".login-form")
-    if (calendarData) {
-        for (const day in calendarData) {
-            for (const time in calendarData) {
-                data[day] = calendarData[day]
-            }
+    Api.get('/events').then((res) => {
+        if (res.data === null) {
+            renderTable(data)
         }
-        // loginForm.classList.add('show')
-        // loginFormBack.classList.add('show')
-        renderTable(data);
-    }
-    else {
-        // loginFormBack.classList.add('show')
-        // loginForm.classList.add('show')
-        renderTable(data);
-    }
+        else {
+            res.data.map(item => {
+                const parsedData = JSON.parse(item.data)
+                const id = item.id
+                data[parsedData.day][parsedData.time] = {
+                    title: parsedData.title,
+                    participants: parsedData.participants,
+                    id: id
+                }
+            })
+        }
+    }).then(() => {
+        renderTable(data)
+    })
 }
-

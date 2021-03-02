@@ -1,3 +1,4 @@
+import { Api } from '../api';
 import {
   data,
   filterBy,
@@ -25,7 +26,17 @@ export default function pushMeeting(event) {
       title: meetingTitle.value,
       participants: selectedParticipants,
     };
-    localStorage.setItem('calendarData', JSON.stringify(data));
+
+    Api.post('/events', {
+      data: JSON.stringify({
+        title: meetingTitle.value,
+        participants: selectedParticipants,
+        time:selectedTime,
+        day:selectedWeekDay
+      }
+      )
+    })
+
     error.innerText = '';
     if (filterBy === 'All members') {
       renderTable(data);

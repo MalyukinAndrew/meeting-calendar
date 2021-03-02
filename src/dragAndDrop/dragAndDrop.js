@@ -1,10 +1,8 @@
+import { Api } from '../api';
 import {
   data, filterBy, filteredData, filterFunc,
 } from '../index';
 import { renderTable } from '../table/table';
-
-const rawCalendarData = localStorage.getItem('calendarData');
-const calendarData = JSON.parse(rawCalendarData);
 
 export default function addDragAndDrop() {
   const draggableMeetingCard = document.querySelectorAll('.filled');
@@ -14,6 +12,7 @@ export default function addDragAndDrop() {
   let time;
   let title;
   let participants;
+  let id;
 
   draggableMeetingCard.forEach((item) => {
     item.addEventListener('dragstart', ((e) => {
@@ -21,6 +20,7 @@ export default function addDragAndDrop() {
       time = item.dataset.time;
       title = item.dataset.title;
       participants = item.dataset.participants.split(',');
+      id = item.dataset.id;
     }));
   });
 
@@ -40,7 +40,14 @@ export default function addDragAndDrop() {
           title,
           participants,
         };
-        localStorage.setItem('calendarData', JSON.stringify(data));
+      Api.put(`/events/${id}`, {
+        data:JSON.stringify({
+          title: title,
+          participants: participants,
+          time:e.target.dataset.time,
+          day:e.target.dataset.day
+        })
+      })
       }
       if (filterBy === 'All members') {
         renderTable(data);
